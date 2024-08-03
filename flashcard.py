@@ -45,8 +45,8 @@ class FlashcardApp:
 
     def record_result(self, result, annotation=""):
         record = {
-            self.name_col: self.df.iloc[self.index][self.name_col],
-            self.phone_col: self.df.iloc[self.index][self.phone_col],
+            "Name": self.df.iloc[self.index][self.name_col],
+            "Phone": self.df.iloc[self.index][self.phone_col],
             "Result": result,
             "Annotation": annotation
         }
@@ -61,7 +61,8 @@ class FlashcardApp:
         summary = {
             "Total Contacts": total_contacts,
             "Successful Contacts": successful_contacts,
-            "Failed Contacts": failed_contacts
+            "Failed Contacts": len(failed_contacts),  # 仅存储失败的数量
+            "Failed Details": failed_contacts  # 保存详细信息
         }
 
         summary_text = (
@@ -73,7 +74,7 @@ class FlashcardApp:
         if failed_contacts:
             summary_text += "\n失败的联系人:\n"
             for contact in failed_contacts:
-                summary_text += f"联系人: {contact[self.name_col]}, 电话: {contact[self.phone_col]}, 注释: {contact['Annotation']}\n"
+                summary_text += f"联系人: {contact['Name']}, 电话: {contact['Phone']}, 注释: {contact['Annotation']}\n"
 
         self.label.config(text=summary_text)
         self.success_button.pack_forget()
@@ -90,7 +91,7 @@ class FlashcardApp:
 
     def retry_failed_contacts(self):
         failed_contacts_df = pd.DataFrame([res for res in self.results if res['Result'] == "失败"])
-        self.df = failed_contacts_df[[self.name_col, self.phone_col, 'Annotation']].copy()
+        self.df = failed_contacts_df[["Name", "Phone", "Annotation"]].copy()
         self.index = 0
         self.results = []
         if self.retry_button:

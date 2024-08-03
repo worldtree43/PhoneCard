@@ -72,8 +72,13 @@ class ColumnSelectionApp:
                 history_text += (
                     f"总共联系了 {summary['Total Contacts']} 家\n"
                     f"联系成功: {summary['Successful Contacts']} 家\n"
-                    f"联系失败: {summary['Failed Contacts']} 家\n\n"
+                    f"联系失败: {summary['Failed Contacts']} 家\n"
                 )
+                if summary['Failed Contacts'] > 0:
+                    history_text += "失败的联系人:\n"
+                    for contact in summary['Failed Details']:
+                        history_text += f"联系人: {contact['Name']}, 电话: {contact['Phone']}, 注释: {contact['Annotation']}\n"
+                history_text += "\n"
             messagebox.showinfo("历史记录", history_text)
         else:
             messagebox.showinfo("历史记录", "没有历史记录")
